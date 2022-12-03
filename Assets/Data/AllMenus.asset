@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57d40a8ba5f34874c9cfae8e00ef7dcb, type: 3}
+  m_Name: AllMenus
+  m_EditorClassIdentifier: 
+  _menuNames:
+  - DataPanel
+  - LoginPanel
+  _menuPrefabs:
+  - {fileID: 5569667415021470794, guid: e38852d5bc6ab594bac32a2976258e6f, type: 3}
+  - {fileID: 7245612395431122836, guid: e0c9bd2b7e8358b46b4ce45de726b2c1, type: 3}
