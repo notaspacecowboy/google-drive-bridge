@@ -5,8 +5,7 @@ using UnityEngine;
 
 namespace GoogleDriveBridge
 {
-    [Serializable]
-    public struct ResponseData
+    public class ResponseData
     {
         public bool result;
         public string msg;

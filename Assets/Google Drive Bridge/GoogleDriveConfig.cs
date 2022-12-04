@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine.Networking;
 using System.Xml.Linq;
-using GoogleSheetsForUnity;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -27,22 +26,6 @@ namespace GoogleDriveBridge
         [SerializeField] [Tooltip("Please specify the password of your google apps script")]
         private string _password = "";
         public string Password => _password;
-
-
-
-        private string _sid = "";
-
-        public string Sid
-        {
-            get
-            {
-                return _sid;
-            }
-            set
-            {
-                _sid = value;
-            }
-        }
     }
 
 #if UNITY_EDITOR
@@ -88,13 +71,13 @@ namespace GoogleDriveBridge
             string password = _password.stringValue;
             Debug.Log($"url: {url}, password: {password}");
 
-            var form = new Dictionary<string, string>();
-            form.Add("password", password);
 
-            int action = (int)RequestCode.VerifyConnection;
-            form.Add("action", action.ToString());
+            VerifyConnectionRequest request = new VerifyConnectionRequest();
+            request.password = password;
+            request.action = (int) RequestCode.VerifyConnection;
 
-            var response = await UnityWebRequest.Post(url, form).SendWebRequest();
+            string jsonRequest = JsonUtility.ToJson(request);
+            var response = await UnityWebRequest.Post(url, jsonRequest).SendWebRequest();
             if (response.result != UnityWebRequest.Result.Success)
             {
                 mVerifyResult = "Connection failed!";

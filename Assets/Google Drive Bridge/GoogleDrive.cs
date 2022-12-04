@@ -14,6 +14,7 @@ namespace GoogleDriveBridge
         VerifyConnection                   = 0,
         SendVerificationCode               = 1,
         Login                              = 2,
+
         GetAllTables                       = 3,
         CreateNewTable                     = 4,
         GetAllColumnsOfTable               = 5,
@@ -61,89 +62,75 @@ namespace GoogleDriveBridge
 
         #endregion
 
-        #region request json class
-
-        private class GoogleDriveRequestBase
-        {
-            public int action;
-            public string password;
-            public string ssid;
-        }
-
-        private class AppendRowRequest: GoogleDriveRequestBase
-        {
-            public string tableName;
-            public List<string> cellValues;
-        }
-
-        private class AddNewColumnRequest : GoogleDriveRequestBase
-        {
-            public string tableName;
-            public string columnName;
-        }
-
-        #endregion
-
         #region APIs
 
         public void SetUserSheetId(string sheetId)
         {
-            _config.Sid = sheetId;
+            _sid = sheetId;
+        }
+
+        public async UniTask<ResponseData> VerifyConnection()
+        {
+            VerifyConnectionRequest request = new VerifyConnectionRequest();
+            FillForm(request, RequestCode.VerifyConnection);
+
+            string jsonRequest = JsonUtility.ToJson(request);
+            return await ProcessRequest(jsonRequest);
         }
 
         public async UniTask<ResponseData> SendVerificationCode(string email)
         {
-            Dictionary<string, string> form = new Dictionary<string, string>();
+            SendVerificationRequest request = new SendVerificationRequest();
+            FillForm(request, RequestCode.SendVerificationCode);
+            request.email = email;
 
-            FillForm(form, RequestCode.SendVerificationCode);
-            form.Add("email", email);
-
-            return await ProcessRequest(form);
+            string jsonRequest = JsonUtility.ToJson(request);
+            return await ProcessRequest(jsonRequest);
         }
 
 
         public async UniTask<ResponseData> Login(string email, string verificationCode)
         {
-            Dictionary<string, string> form = new Dictionary<string, string>();
+            LoginRequest request = new LoginRequest();
+            FillForm(request, RequestCode.Login);
+            request.email = email;
+            request.code = verificationCode;
 
-            FillForm(form, RequestCode.Login);
-            form.Add("email", email);
-            form.Add("code", verificationCode);
-
-            return await ProcessRequest(form);
+            string jsonRequest = JsonUtility.ToJson(request);
+            return await ProcessRequest(jsonRequest);
         }
 
 
         public async UniTask<ResponseData> GetAllTables()
         {
-            Dictionary<string, string> form = new Dictionary<string, string>();
+            GetAllTablesRequest request = new GetAllTablesRequest();
+            FillForm(request, RequestCode.GetAllTables);
 
-            FillForm(form, RequestCode.GetAllTables);
-
-            return await ProcessRequest(form);
+            string jsonRequest = JsonUtility.ToJson(request);
+            return await ProcessRequest(jsonRequest);
         }
 
 
         public async UniTask<ResponseData> CreateNewTable(string tableName)
         {
-            Dictionary<string, string> form = new Dictionary<string, string>();
+            CreateNewTableRequest request = new CreateNewTableRequest();
+            FillForm(request, RequestCode.CreateNewTable);
+            request.tableName = tableName;
 
-            FillForm(form, RequestCode.CreateNewTable);
-            form.Add("tableName", tableName);
-
-            return await ProcessRequest(form);
+            string jsonRequest = JsonUtility.ToJson(request);
+            return await ProcessRequest(jsonRequest);
         }
 
 
 
         public async UniTask<ResponseData> GetAllColumnsOfTable(string tableName)
         {
-            Dictionary<string, string> form = new Dictionary<string, string>();
+            GetAllColumnsRequest request = new GetAllColumnsRequest();
+            FillForm(request, RequestCode.GetAllColumnsOfTable);
+            request.tableName = tableName;
 
-            FillForm(form, RequestCode.GetAllColumnsOfTable);
-            form.Add("tableName", tableName);
-
-            return await ProcessRequest(form);
+            string jsonRequest = JsonUtility.ToJson(request);
+            return await ProcessRequest(jsonRequest);
         }
 
 
@@ -178,6 +165,8 @@ namespace GoogleDriveBridge
         [InspectorName("Configuration Data")]
         private GoogleDriveConfig _config;
 
+        private string _sid;
+
         #endregion
 
         #region private methods
@@ -189,7 +178,7 @@ namespace GoogleDriveBridge
             form.Add("action", requestCode.ToString());
 
             if (requestCode > (int)RequestCode.Login)
-                form.Add("ssid", _config.Sid);
+                form.Add("ssid", _sid);
         }
 
         private void FillForm(GoogleDriveRequestBase request, RequestCode code)
@@ -200,7 +189,7 @@ namespace GoogleDriveBridge
             request.action = requestCode;
 
             if (requestCode > (int)RequestCode.Login)
-                request.ssid = _config.Sid;
+                request.ssid = _sid;
         }
 
         private async UniTask<ResponseData> ProcessRequest(Dictionary<string, string> form)
