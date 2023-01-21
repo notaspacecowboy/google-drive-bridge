@@ -14,7 +14,7 @@ using UnityEditor;
 namespace GoogleDriveBridge
 {
     [Serializable]
-    [CreateAssetMenu(fileName = "GoogleDriveConfig", menuName = "Google Drive Bridge/Configuration Data", order = 1)]
+    [CreateAssetMenu(fileName = "GoogleDriveConfig", menuName = "Google Drive Bridge/Drive Configuration Data", order = 1)]
     public class GoogleDriveConfig : ScriptableObject
     {
         [SerializeField]

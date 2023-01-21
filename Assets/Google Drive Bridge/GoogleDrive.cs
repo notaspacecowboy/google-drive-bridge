@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using UnityEngine.Networking;
@@ -72,89 +71,56 @@ namespace GoogleDriveBridge
         public async UniTask<ResponseData> VerifyConnection()
         {
             VerifyConnectionRequest request = new VerifyConnectionRequest();
-            FillForm(request, RequestCode.VerifyConnection);
-
-            string jsonRequest = JsonUtility.ToJson(request);
-            return await ProcessRequest(jsonRequest);
+            return await ProcessRequest(request, RequestCode.VerifyConnection);
         }
 
         public async UniTask<ResponseData> SendVerificationCode(string email)
         {
-            SendVerificationRequest request = new SendVerificationRequest();
-            FillForm(request, RequestCode.SendVerificationCode);
-            request.email = email;
-
-            string jsonRequest = JsonUtility.ToJson(request);
-            return await ProcessRequest(jsonRequest);
+            SendVerificationRequest request = new SendVerificationRequest() {email = email};
+            return await ProcessRequest(request, RequestCode.SendVerificationCode);
         }
 
 
         public async UniTask<ResponseData> Login(string email, string verificationCode)
         {
-            LoginRequest request = new LoginRequest();
-            FillForm(request, RequestCode.Login);
-            request.email = email;
-            request.code = verificationCode;
-
-            string jsonRequest = JsonUtility.ToJson(request);
-            return await ProcessRequest(jsonRequest);
+            LoginRequest request = new LoginRequest() {email = email, code = verificationCode};
+            return await ProcessRequest(request, RequestCode.Login);
         }
 
 
         public async UniTask<ResponseData> GetAllTables()
         {
             GetAllTablesRequest request = new GetAllTablesRequest();
-            FillForm(request, RequestCode.GetAllTables);
-
-            string jsonRequest = JsonUtility.ToJson(request);
-            return await ProcessRequest(jsonRequest);
+            return await ProcessRequest(request, RequestCode.GetAllTables);
         }
 
 
         public async UniTask<ResponseData> CreateNewTable(string tableName)
         {
-            CreateNewTableRequest request = new CreateNewTableRequest();
-            FillForm(request, RequestCode.CreateNewTable);
-            request.tableName = tableName;
-
-            string jsonRequest = JsonUtility.ToJson(request);
-            return await ProcessRequest(jsonRequest);
+            CreateNewTableRequest request = new CreateNewTableRequest() {tableName = tableName};
+            return await ProcessRequest(request, RequestCode.CreateNewTable);
         }
 
 
 
         public async UniTask<ResponseData> GetAllColumnsOfTable(string tableName)
         {
-            GetAllColumnsRequest request = new GetAllColumnsRequest();
-            FillForm(request, RequestCode.GetAllColumnsOfTable);
-            request.tableName = tableName;
-
-            string jsonRequest = JsonUtility.ToJson(request);
-            return await ProcessRequest(jsonRequest);
+            GetAllColumnsRequest request = new GetAllColumnsRequest() {tableName = tableName};
+            return await ProcessRequest(request, RequestCode.GetAllColumnsOfTable);
         }
 
 
         public async UniTask<ResponseData> AppendRow(string tableName, List<string> cellValues)
         {
-            AppendRowRequest request = new AppendRowRequest();
-            FillForm(request, RequestCode.AppendRow);
-            request.tableName = tableName;
-            request.cellValues = new List<string>(cellValues);
-
-            string jsonRequest = JsonUtility.ToJson(request);
-            return await ProcessRequest(jsonRequest);
+            AppendRowRequest request = new AppendRowRequest() {tableName = tableName, cellValues = cellValues};
+            return await ProcessRequest(request, RequestCode.AppendRow);
         }
 
 
         public async UniTask<ResponseData> AddNewColumn(string tableName, string columnName)
         {
-            AddNewColumnRequest request = new AddNewColumnRequest();
-            FillForm(request, RequestCode.AddNewColumn);
-            request.tableName = tableName;
-            request.columnName = columnName;
-
-            string jsonRequest = JsonUtility.ToJson(request);
-            return await ProcessRequest(jsonRequest);
+            AddNewColumnRequest request = new AddNewColumnRequest() {tableName = tableName, columnName = columnName};
+            return await ProcessRequest(request, RequestCode.AddNewColumn);
         }
 
         #endregion
@@ -171,17 +137,7 @@ namespace GoogleDriveBridge
 
         #region private methods
 
-        private void FillForm(Dictionary<string, string> form, RequestCode code)
-        {
-            form.Add("password", _config.Password);
-            int requestCode = (int)code;
-            form.Add("action", requestCode.ToString());
-
-            if (requestCode > (int)RequestCode.Login)
-                form.Add("ssid", _sid);
-        }
-
-        private void FillForm(GoogleDriveRequestBase request, RequestCode code)
+        private void FillForm(GoogleDriveRequest request, RequestCode code)
         {
             int requestCode = (int)code;
 
@@ -192,15 +148,12 @@ namespace GoogleDriveBridge
                 request.ssid = _sid;
         }
 
-        private async UniTask<ResponseData> ProcessRequest(Dictionary<string, string> form)
+        private async UniTask<ResponseData> ProcessRequest(GoogleDriveRequest request, RequestCode code)
         {
-            var json = (await UnityWebRequest.Post(_config.Url, form).SendWebRequest()).downloadHandler.text;
-            Debug.Log(json);
-            return JsonUtility.FromJson<ResponseData>(json);
-        }
+            FillForm(request, code);
+            string jsonRequest = JsonUtility.ToJson(request);
 
-        private async UniTask<ResponseData> ProcessRequest(string jsonData) {
-            var json = (await UnityWebRequest.Post(_config.Url, jsonData).SendWebRequest()).downloadHandler.text;
+            var json = (await UnityWebRequest.Post(_config.Url, jsonRequest).SendWebRequest()).downloadHandler.text;
             Debug.Log(json);
             return JsonUtility.FromJson<ResponseData>(json);
         }
