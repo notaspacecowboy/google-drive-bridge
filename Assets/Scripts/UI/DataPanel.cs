@@ -171,14 +171,14 @@ public class DataPanel : UIPanel
     {
         DisableInput();
 
-        List<string> cellValues = new List<string>();
+        Row newRow = new Row();
         foreach (var data in _allRows)
         {
-            cellValues.Add(data.RowValue);
+            newRow.cellValues.Add(data.RowValue);
         }
 
         string selectedTableName = _tableNameSelector.options[_tableNameSelector.value].text;
-        await GoogleDrive.Instance.AppendRow(selectedTableName, cellValues);
+        await GoogleDrive.Instance.AppendRow(selectedTableName, newRow);
 
         EnableInput();
     }

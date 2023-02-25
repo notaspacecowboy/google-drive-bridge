@@ -19,6 +19,7 @@ namespace GoogleDriveBridge
         GetAllColumnsOfTable               = 5,
         AppendRow                          = 6,
         AddNewColumn                       = 7,
+        AddRows                            = 8
     }
 
 
@@ -110,9 +111,9 @@ namespace GoogleDriveBridge
         }
 
 
-        public async UniTask<ResponseData> AppendRow(string tableName, List<string> cellValues)
+        public async UniTask<ResponseData> AppendRow(string tableName, Row row)
         {
-            AppendRowRequest request = new AppendRowRequest() {tableName = tableName, cellValues = cellValues};
+            AppendRowRequest request = new AppendRowRequest() {tableName = tableName, row = row };
             return await ProcessRequest(request, RequestCode.AppendRow);
         }
 
@@ -121,6 +122,15 @@ namespace GoogleDriveBridge
         {
             AddNewColumnRequest request = new AddNewColumnRequest() {tableName = tableName, columnName = columnName};
             return await ProcessRequest(request, RequestCode.AddNewColumn);
+        }
+
+        public async UniTask<ResponseData> AddRows(string tableName, List<Row> rows, bool clearBeforeWrite = false)
+        {
+            AddRowsRequest request = new AddRowsRequest()
+                {tableName = tableName, clearBeforeWrite = clearBeforeWrite, rows = rows};
+
+            return await ProcessRequest(request, RequestCode.AddRows);
+
         }
 
         #endregion
@@ -152,6 +162,7 @@ namespace GoogleDriveBridge
         {
             FillForm(request, code);
             string jsonRequest = JsonUtility.ToJson(request);
+            Debug.Log(jsonRequest);
 
             var json = (await UnityWebRequest.Post(_config.Url, jsonRequest).SendWebRequest()).downloadHandler.text;
             Debug.Log(json);

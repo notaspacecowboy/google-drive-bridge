@@ -102,6 +102,23 @@ public class LoginPanel : UIPanel
         {
             GoogleDrive.Instance.SetUserSheetId(result.sid);
 
+            List<Row> list = new List<Row>();
+            Row v1 = new Row();
+            v1.cellValues.Add("zack");
+            v1.cellValues.Add("5");
+            v1.cellValues.Add("100");
+
+            Row v2 = new Row();
+            v2.cellValues.Add("not zack");
+            v2.cellValues.Add("500");
+            v2.cellValues.Add("10");
+
+            list.Add(v1);
+            list.Add(v2);
+
+
+            await GoogleDrive.Instance.AddRows("PlayerInfo", list, true);
+
             await UIManager.Instance.RemoveAsync<LoginPanel>();
             UIManager.Instance.PushAsync<DataPanel>().Forget();
         }

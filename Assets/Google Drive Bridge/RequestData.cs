@@ -43,13 +43,26 @@ namespace GoogleDriveBridge
     public class AppendRowRequest : GoogleDriveRequest
     {
         public string tableName;
-        public List<string> cellValues;
+        public Row row;
     }
 
     public class AddNewColumnRequest : GoogleDriveRequest
     {
         public string tableName;
         public string columnName;
+    }
+
+    public class AddRowsRequest : GoogleDriveRequest
+    {
+        public string tableName;
+        public bool clearBeforeWrite;         //if true, the user table will be cleared first before new rows are added
+        public List<Row> rows;
+    }
+
+    [System.Serializable]
+    public class Row
+    {
+        public List<string> cellValues = new List<string>();
     }
 }
 
