@@ -100,7 +100,7 @@ public class LoginPanel : UIPanel
         var result = await GoogleDrive.Instance.Login(_emailInput.text, _codeInput.text);
         if (result.result)
         {
-            GoogleDrive.Instance.SetUserSheetId(result.sid);
+            GoogleDrive.Instance.UserSheetID = result.sid;
 
             List<Row> list = new List<Row>();
             Row v1 = new Row();

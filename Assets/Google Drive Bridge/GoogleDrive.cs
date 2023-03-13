@@ -10,16 +10,16 @@ namespace GoogleDriveBridge
 {
     public enum RequestCode
     {
-        VerifyConnection                   = 0,
-        SendVerificationCode               = 1,
-        Login                              = 2,
+        VerifyConnection                 = 0,
+        SendVerificationCode             = 1,
+        Login                            = 2,
 
-        GetAllTables                       = 3,
-        CreateNewTable                     = 4,
-        GetAllColumnsOfTable               = 5,
-        AppendRow                          = 6,
-        AddNewColumn                       = 7,
-        AddRows                            = 8
+        GetAllTables                     = 3,
+        CreateNewTable                   = 4,
+        GetAllColumnsOfTable             = 5,
+        AppendRow                        = 6,
+        AddNewColumn                     = 7,
+        AddRows                          = 8
     }
 
 
@@ -64,11 +64,6 @@ namespace GoogleDriveBridge
 
         #region APIs
 
-        public void SetUserSheetId(string sheetId)
-        {
-            _sid = sheetId;
-        }
-
         public async UniTask<ResponseData> VerifyConnection()
         {
             VerifyConnectionRequest request = new VerifyConnectionRequest();
@@ -77,14 +72,14 @@ namespace GoogleDriveBridge
 
         public async UniTask<ResponseData> SendVerificationCode(string email)
         {
-            SendVerificationRequest request = new SendVerificationRequest() {email = email};
+            SendVerificationRequest request = new SendVerificationRequest() { email = email };
             return await ProcessRequest(request, RequestCode.SendVerificationCode);
         }
 
 
         public async UniTask<ResponseData> Login(string email, string verificationCode)
         {
-            LoginRequest request = new LoginRequest() {email = email, code = verificationCode};
+            LoginRequest request = new LoginRequest() { email = email, code = verificationCode };
             return await ProcessRequest(request, RequestCode.Login);
         }
 
@@ -98,7 +93,7 @@ namespace GoogleDriveBridge
 
         public async UniTask<ResponseData> CreateNewTable(string tableName)
         {
-            CreateNewTableRequest request = new CreateNewTableRequest() {tableName = tableName};
+            CreateNewTableRequest request = new CreateNewTableRequest() { tableName = tableName };
             return await ProcessRequest(request, RequestCode.CreateNewTable);
         }
 
@@ -106,28 +101,28 @@ namespace GoogleDriveBridge
 
         public async UniTask<ResponseData> GetAllColumnsOfTable(string tableName)
         {
-            GetAllColumnsRequest request = new GetAllColumnsRequest() {tableName = tableName};
+            GetAllColumnsRequest request = new GetAllColumnsRequest() { tableName = tableName };
             return await ProcessRequest(request, RequestCode.GetAllColumnsOfTable);
         }
 
 
         public async UniTask<ResponseData> AppendRow(string tableName, Row row)
         {
-            AppendRowRequest request = new AppendRowRequest() {tableName = tableName, row = row };
+            AppendRowRequest request = new AppendRowRequest() { tableName = tableName, row = row };
             return await ProcessRequest(request, RequestCode.AppendRow);
         }
 
 
         public async UniTask<ResponseData> AddNewColumn(string tableName, string columnName)
         {
-            AddNewColumnRequest request = new AddNewColumnRequest() {tableName = tableName, columnName = columnName};
+            AddNewColumnRequest request = new AddNewColumnRequest() { tableName = tableName, columnName = columnName };
             return await ProcessRequest(request, RequestCode.AddNewColumn);
         }
 
         public async UniTask<ResponseData> AddRows(string tableName, List<Row> rows, bool clearBeforeWrite = false)
         {
             AddRowsRequest request = new AddRowsRequest()
-                {tableName = tableName, clearBeforeWrite = clearBeforeWrite, rows = rows};
+            { tableName = tableName, clearBeforeWrite = clearBeforeWrite, rows = rows };
 
             return await ProcessRequest(request, RequestCode.AddRows);
 
@@ -135,15 +130,6 @@ namespace GoogleDriveBridge
 
         #endregion
 
-        #region private fields
-
-        [SerializeField]
-        [InspectorName("Configuration Data")]
-        private GoogleDriveConfig _config;
-
-        private string _sid;
-
-        #endregion
 
         #region private methods
 
@@ -155,7 +141,7 @@ namespace GoogleDriveBridge
             request.action = requestCode;
 
             if (requestCode > (int)RequestCode.Login)
-                request.ssid = _sid;
+                request.ssid = _userSheetID;
         }
 
         private async UniTask<ResponseData> ProcessRequest(GoogleDriveRequest request, RequestCode code)
@@ -167,6 +153,30 @@ namespace GoogleDriveBridge
             var json = (await UnityWebRequest.Post(_config.Url, jsonRequest).SendWebRequest()).downloadHandler.text;
             Debug.Log(json);
             return JsonUtility.FromJson<ResponseData>(json);
+        }
+
+        #endregion
+
+
+        #region fields and properties
+
+        [SerializeField]
+        [InspectorName("Configuration Data")]
+        private GoogleDriveConfig _config;
+
+        private string _userSheetID;
+
+        public string UserSheetID
+        {
+            get
+            {
+                return _userSheetID;
+            }
+
+            set
+            {
+                _userSheetID = value;
+            }
         }
 
         #endregion
