@@ -19,7 +19,9 @@ namespace GoogleDriveBridge
         GetAllColumnsOfTable             = 5,
         AppendRow                        = 6,
         AddNewColumn                     = 7,
-        AddRows                          = 8
+        AddRows                          = 8,
+        
+        SendSheetLinkToEmail             = 9,
     }
 
 
@@ -126,6 +128,12 @@ namespace GoogleDriveBridge
 
             return await ProcessRequest(request, RequestCode.AddRows);
 
+        }
+
+        public async UniTask<ResponseData> SendSheetLinkToEmail(string tableName, string emailAdress)
+        {
+            SendSheetLinkRequest request = new SendSheetLinkRequest() {tableName = tableName, email = emailAdress};
+            return await ProcessRequest(request, RequestCode.SendSheetLinkToEmail);
         }
 
         #endregion

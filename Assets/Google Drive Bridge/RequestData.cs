@@ -59,6 +59,13 @@ namespace GoogleDriveBridge
         public List<Row> rows;
     }
 
+
+    public class SendSheetLinkRequest : GoogleDriveRequest
+    {
+        public string tableName;
+        public string email;
+    }
+
     [System.Serializable]
     public class Row
     {

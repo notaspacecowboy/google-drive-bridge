@@ -100,6 +100,10 @@ public class LoginPanel : UIPanel
         var result = await GoogleDrive.Instance.Login(_emailInput.text, _codeInput.text);
         if (result.result)
         {
+            //setup player info
+            PlayerInfo.Instance.Email = _emailInput.text;
+
+            //setup google sheet
             GoogleDrive.Instance.UserSheetID = result.sid;
 
             List<Row> list = new List<Row>();
