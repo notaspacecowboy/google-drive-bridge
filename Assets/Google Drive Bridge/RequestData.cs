@@ -11,9 +11,7 @@ namespace GoogleDriveBridge
         public string ssid;
     }
 
-    public class VerifyConnectionRequest : GoogleDriveRequest
-    {
-    }
+    #region school project specific request types
 
     public class SendVerificationRequest : GoogleDriveRequest
     {
@@ -25,6 +23,16 @@ namespace GoogleDriveBridge
         public string email;
         public string code;
     }
+
+    public class SendSheetLinkRequest : GoogleDriveRequest
+    {
+        public string tableName;
+        public string email;
+    }
+
+    #endregion
+
+    #region Google Sheet request types
 
     public class GetAllTablesRequest : GoogleDriveRequest
     {
@@ -59,12 +67,20 @@ namespace GoogleDriveBridge
         public List<Row> rows;
     }
 
+    #endregion
 
-    public class SendSheetLinkRequest : GoogleDriveRequest
+    #region test request types
+
+    public class VerifyConnectionRequest : GoogleDriveRequest
     {
-        public string tableName;
-        public string email;
     }
+
+    public class GetTestSheetRequest : GoogleDriveRequest
+    {
+    }
+
+    #endregion
+
 
     [System.Serializable]
     public class Row

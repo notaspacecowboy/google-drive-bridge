@@ -23,6 +23,9 @@ public class LoginPanel : UIPanel
     [SerializeField]
     private Button _loginbutton;
 
+    [SerializeField]
+    private LoadingSpinner _loadingSpinner;
+
     private EventTrigger _trigger;
 
     private bool _canSendCode;
@@ -96,8 +99,16 @@ public class LoginPanel : UIPanel
 
     private async UniTask Login()
     {
+        _loadingSpinner.Show();
         DisableInput();
+
         var result = await GoogleDrive.Instance.Login(_emailInput.text, _codeInput.text);
+        if (!result.result)
+        {
+            EnableInput();
+            _loadingSpinner.Hide();
+        }
+
         if (result.result)
         {
             //setup player info
@@ -123,12 +134,10 @@ public class LoginPanel : UIPanel
 
             await GoogleDrive.Instance.AddRows("PlayerInfo", list, true);
 
+            _loadingSpinner.Hide();
+
             await UIManager.Instance.RemoveAsync<LoginPanel>();
             UIManager.Instance.PushAsync<DataPanel>().Forget();
-        }
-        else
-        {
-            EnableInput();
         }
     }
 

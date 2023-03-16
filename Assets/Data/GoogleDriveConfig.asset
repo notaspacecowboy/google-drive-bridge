@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25862639093343b41bf7bfafea1eeeff, type: 3}
   m_Name: GoogleDriveConfig
   m_EditorClassIdentifier: 
-  _url: https://script.google.com/macros/s/AKfycbw6Phoorn7tOP5fcHgMBOof2xzrSSzRnYmwmX1ZEKBHH04noFdhr5lOqrQHoZa6JVEP/exec
+  _url: https://script.google.com/macros/s/AKfycbw7JbF3bvVYzvX9WTN1Owar-YwGZKNJM60o5deCOU-kzbXADOTPGXT8aFgNiHus4Vfz/exec
   _password: cs4490

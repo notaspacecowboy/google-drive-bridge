@@ -37,6 +37,12 @@ public class DataPanel : UIPanel
     [SerializeField]
     private Button _newRowButton;
 
+    [SerializeField]
+    private Button _unitTestButton;
+
+    [SerializeField]
+    private LoadingSpinner _loadingSpinner;
+
     private List<RowData> _allRows = new List<RowData>();
 
     public override async UniTask InitAsync()
@@ -61,6 +67,7 @@ public class DataPanel : UIPanel
         _newColumnButton.interactable = true;
         _tableNameSelectButton.interactable = true;
         _newRowButton.interactable = true;
+        _unitTestButton.interactable = true;
     }
 
     public override void DisableInput()
@@ -71,6 +78,7 @@ public class DataPanel : UIPanel
         _newColumnButton.interactable = false;
         _tableNameSelectButton.interactable = false;
         _newRowButton.interactable = false;
+        _unitTestButton.interactable = false;
     }
 
 
@@ -92,6 +100,11 @@ public class DataPanel : UIPanel
     public void OnAddNewRowButtonClicked()
     {
         AppendRow().Forget();
+    }
+
+    public void OnUnitTestButtonClicked()
+    {
+        RunUnitTest().Forget();
     }
 
 
@@ -180,6 +193,17 @@ public class DataPanel : UIPanel
         string selectedTableName = _tableNameSelector.options[_tableNameSelector.value].text;
         await GoogleDrive.Instance.AppendRow(selectedTableName, newRow);
 
+        EnableInput();
+    }
+
+    private async UniTask RunUnitTest()
+    {
+        DisableInput();
+        _loadingSpinner.Show();
+
+        await GoogleApiUnitTest.RunTests();
+
+        _loadingSpinner.Hide();
         EnableInput();
     }
 }

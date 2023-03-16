@@ -10,18 +10,22 @@ namespace GoogleDriveBridge
 {
     public enum RequestCode
     {
+        //test APIs
         VerifyConnection                 = 0,
-        SendVerificationCode             = 1,
-        Login                            = 2,
+        GetTestSheet                     = 1,
 
-        GetAllTables                     = 3,
-        CreateNewTable                   = 4,
-        GetAllColumnsOfTable             = 5,
-        AppendRow                        = 6,
-        AddNewColumn                     = 7,
-        AddRows                          = 8,
-        
-        SendSheetLinkToEmail             = 9,
+        //school project specific APIs
+        SendVerificationCode             = 100,
+        Login                            = 101,
+        SendSheetLinkToEmail             = 102,
+
+        //Google Sheet APIs
+        GetAllTables                     = 1000,
+        CreateNewTable                   = 1001,
+        GetAllColumnsOfTable             = 1002,
+        AppendRow                        = 1003,
+        AddNewColumn                     = 1004,
+        AddRows                          = 1005,
     }
 
 
@@ -64,13 +68,7 @@ namespace GoogleDriveBridge
 
         #endregion
 
-        #region APIs
-
-        public async UniTask<ResponseData> VerifyConnection()
-        {
-            VerifyConnectionRequest request = new VerifyConnectionRequest();
-            return await ProcessRequest(request, RequestCode.VerifyConnection);
-        }
+        #region school project specific APIs
 
         public async UniTask<ResponseData> SendVerificationCode(string email)
         {
@@ -85,6 +83,15 @@ namespace GoogleDriveBridge
             return await ProcessRequest(request, RequestCode.Login);
         }
 
+        public async UniTask<ResponseData> SendSheetLinkToEmail(string tableName, string emailAdress)
+        {
+            SendSheetLinkRequest request = new SendSheetLinkRequest() {tableName = tableName, email = emailAdress};
+            return await ProcessRequest(request, RequestCode.SendSheetLinkToEmail);
+        }
+
+        #endregion
+
+        #region Google Sheet APIs
 
         public async UniTask<ResponseData> GetAllTables()
         {
@@ -124,20 +131,29 @@ namespace GoogleDriveBridge
         public async UniTask<ResponseData> AddRows(string tableName, List<Row> rows, bool clearBeforeWrite = false)
         {
             AddRowsRequest request = new AddRowsRequest()
-            { tableName = tableName, clearBeforeWrite = clearBeforeWrite, rows = rows };
+                { tableName = tableName, clearBeforeWrite = clearBeforeWrite, rows = rows };
 
             return await ProcessRequest(request, RequestCode.AddRows);
 
         }
 
-        public async UniTask<ResponseData> SendSheetLinkToEmail(string tableName, string emailAdress)
+        #endregion
+
+        #region Test APIs
+
+        public async UniTask<ResponseData> VerifyConnection()
         {
-            SendSheetLinkRequest request = new SendSheetLinkRequest() {tableName = tableName, email = emailAdress};
-            return await ProcessRequest(request, RequestCode.SendSheetLinkToEmail);
+            VerifyConnectionRequest request = new VerifyConnectionRequest();
+            return await ProcessRequest(request, RequestCode.VerifyConnection);
+        }
+
+        public async UniTask<ResponseData> GetTestSheet()
+        {
+            GetTestSheetRequest request = new GetTestSheetRequest();
+            return await ProcessRequest(request, RequestCode.GetTestSheet);
         }
 
         #endregion
-
 
         #region private methods
 
@@ -164,7 +180,6 @@ namespace GoogleDriveBridge
         }
 
         #endregion
-
 
         #region fields and properties
 

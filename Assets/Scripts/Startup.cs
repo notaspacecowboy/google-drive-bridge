@@ -1,10 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using GoogleDriveBridge;
 using UnityEngine;
 
-public class TestUISystem : MonoBehaviour
+public class Startup : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
