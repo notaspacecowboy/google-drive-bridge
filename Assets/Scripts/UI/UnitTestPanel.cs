@@ -80,6 +80,7 @@ public class UnitTestPanel : UIPanel
         foreach (var go in _allResults)
             Destroy(go);
         _allResults.Clear();
+
         var sid = GoogleDrive.Instance.UserSheetID;
         var currentTables = new List<string>() { "Sheet1" };
         var currentColumns = new List<string>();
